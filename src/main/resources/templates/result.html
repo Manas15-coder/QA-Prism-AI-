@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>QA Prism AI</title>
+
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="hero-section">
+
+        <h1>QA Prism AI ⭐</h1>
+
+        <p class="tagline">
+
+            Generate QA Artifacts On Demand
+
+        </p>
+
+    </div>
+
+    <div th:if="${error}"
+         class="alert alert-danger">
+
+        <strong>Error :</strong>
+
+        <span th:text="${error}"></span>
+
+    </div>
+
+    <div class="result-card">
+
+        <h3>
+
+            ✅ PRD Uploaded Successfully
+
+        </h3>
+
+        <p>
+
+            Select the artifact you want to generate.
+
+        </p>
+
+    </div>
+
+    <!-- Row 1 -->
+
+    <div class="row g-3 mb-3">
+
+        <div class="col-md-3">
+
+            <button
+                    class="btn btn-primary w-100 artifact-btn"
+                    onclick="generateArtifact(
+                    'Executive Summary',
+                    this)">
+
+                📋 Executive Summary
+
+            </button>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <button
+                    class="btn btn-primary w-100 artifact-btn"
+                    onclick="generateArtifact(
+                    'Gap Analysis',
+                    this)">
+
+                🔍 Gap Analysis
+
+            </button>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <button
+                    class="btn btn-primary w-100 artifact-btn"
+                    onclick="generateArtifact(
+                    'Risk Analysis',
+                    this)">
+
+                ⚠️ Risk Analysis
+
+            </button>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <button
+                    class="btn btn-primary w-100 artifact-btn"
+                    onclick="generateArtifact(
+                    'Regression Impact',
+                    this)">
+
+                🔄 Regression Impact
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Row 2 -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+
+            <button
+                    class="btn btn-success w-100 artifact-btn"
+                    onclick="generateArtifact(
+                    'Test Scenarios',
+                    this)">
+
+                🧪 Test Scenarios
+
+            </button>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <button
+                    class="btn btn-success w-100 artifact-btn"
+                    onclick="generateArtifact(
+                    'Test Cases',
+                    this)">
+
+                ✅ Test Cases
+
+            </button>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <button
+                    class="btn btn-success w-100 artifact-btn"
+                    onclick="generateArtifact(
+                    'Jira Stories',
+                    this)">
+
+                📋 Jira Stories
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Custom Prompt -->
+
+    <div class="result-card">
+
+        <h3>
+
+            🤖 Ask QA Prism AI
+
+        </h3>
+
+        <textarea
+                id="customPrompt"
+                class="form-control"
+                rows="4"
+                placeholder="Example: Generate API Test Cases"></textarea>
+
+        <button
+                class="btn btn-dark mt-3"
+                onclick="generateCustomPrompt()">
+
+            Ask AI
+
+        </button>
+
+    </div>
+
+    <!-- Loading -->
+
+    <div
+            id="loadingSection"
+            class="result-card text-center"
+            style="display:none;">
+
+        <div
+                class="spinner-border text-primary"
+                role="status">
+
+        </div>
+
+        <h5 class="mt-3">
+
+            QA Prism AI Working...
+
+        </h5>
+
+        <p id="statusText">
+
+            Generating...
+
+        </p>
+
+    </div>
+
+    <!-- Output -->
+
+    <div
+            id="output"
+            class="result-card">
+
+        <h3>
+
+            Generated Output
+
+        </h3>
+
+        Click any button above.
+
+    </div>
+
+    <div class="text-center mt-4">
+
+        <a href="/"
+           class="btn btn-secondary">
+
+            Upload Another PRD
+
+        </a>
+
+    </div>
+
+</div>
+
+<script src="/js/app.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,235 @@
+package com.qaprism.ai.service;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Slf4j
+@Service
+public class OllamaService {
+
+    @Value("${ollama.url}")
+    private String ollamaUrl;
+
+    @Value("${ollama.model}")
+    private String model;
+
+    private final ObjectMapper objectMapper =
+            new ObjectMapper();
+
+    private final RestTemplate restTemplate;
+
+    public OllamaService() {
+
+        SimpleClientHttpRequestFactory factory =
+                new SimpleClientHttpRequestFactory();
+
+        factory.setConnectTimeout(
+                10000);
+
+        factory.setReadTimeout(
+                120000);
+
+        this.restTemplate =
+                new RestTemplate(factory);
+    }
+
+    public String generateResponse(
+            String prompt) {
+
+        long startTime =
+                System.currentTimeMillis();
+
+        try {
+
+            log.info(
+                    "========================================");
+
+            log.info(
+                    "Connecting To Ollama");
+
+            log.info(
+                    "Ollama URL : {}",
+                    ollamaUrl);
+
+            log.info(
+                    "Model : {}",
+                    model);
+
+            log.info(
+                    "Prompt Length : {} Characters",
+                    prompt.length());
+
+            HttpHeaders headers =
+                    new HttpHeaders();
+
+            headers.setContentType(
+                    MediaType.APPLICATION_JSON);
+
+            Map<String, Object> options =
+                    new HashMap<>();
+
+            options.put(
+                    "temperature",
+                    0.1);
+
+            options.put(
+                    "top_p",
+                    0.8);
+
+            options.put(
+                    "num_predict",
+                    150);
+
+            options.put(
+                    "think",
+                    false);
+
+            Map<String, Object> requestBody =
+                    new HashMap<>();
+
+            requestBody.put(
+                    "model",
+                    model);
+
+            requestBody.put(
+                    "prompt",
+                    prompt);
+
+            requestBody.put(
+                    "stream",
+                    false);
+
+            requestBody.put(
+                    "think",
+                    false);
+
+            requestBody.put(
+                    "options",
+                    options);
+
+            HttpEntity<Map<String, Object>> request =
+                    new HttpEntity<>(
+                            requestBody,
+                            headers);
+
+            log.info(
+                    "Sending Request To Ollama");
+
+            ResponseEntity<String> response =
+                    restTemplate.postForEntity(
+                            ollamaUrl,
+                            request,
+                            String.class);
+
+            log.info(
+                    "HTTP Status : {}",
+                    response.getStatusCode());
+
+            JsonNode root =
+                    objectMapper.readTree(
+                            response.getBody());
+
+            if (root.has("error")) {
+
+                String error =
+                        root.get("error")
+                                .asText();
+
+                log.error(
+                        "Ollama Error : {}",
+                        error);
+
+                throw new RuntimeException(
+                        error);
+            }
+
+            String responseText =
+                    root.path("response")
+                            .asText("");
+
+            String thinkingText =
+                    root.path("thinking")
+                            .asText("");
+
+            log.info(
+                    "Response Length : {} Characters",
+                    responseText.length());
+
+            log.info(
+                    "Thinking Length : {} Characters",
+                    thinkingText.length());
+
+            String aiResponse;
+
+            if (!responseText.isBlank()) {
+
+                aiResponse =
+                        responseText;
+
+            } else if (!thinkingText.isBlank()) {
+
+                log.warn(
+                        "Response Field Empty. Using Thinking Field.");
+
+                aiResponse =
+                        thinkingText;
+
+            } else {
+
+                log.warn(
+                        "Both Response And Thinking Fields Empty");
+
+                aiResponse =
+                        """
+                        No response generated by model.
+
+                        Possible causes:
+
+                        - Model token limit reached
+                        - Prompt too large
+                        - Model timeout
+                        - Unsupported model configuration
+                        """;
+            }
+
+            long endTime =
+                    System.currentTimeMillis();
+
+            log.info(
+                    "AI Generation Completed");
+
+            log.info(
+                    "Final Response Length : {} Characters",
+                    aiResponse.length());
+
+            log.info(
+                    "Ollama Response Time : {} Seconds",
+                    (endTime - startTime) / 1000);
+
+            log.info(
+                    "========================================");
+
+            return aiResponse;
+
+        } catch (Exception exception) {
+
+            log.error(
+                    "Failed To Call Ollama",
+                    exception);
+
+            throw new RuntimeException(
+                    "Failed To Call Ollama : "
+                            + exception.getMessage(),
+                    exception);
+        }
+    }
+}
