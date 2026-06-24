@@ -6,9 +6,7 @@ QA Prism AI is a lightweight AI agent that helps QA teams quickly analyze Produc
 
 Built using Java 17, Spring Boot, and Ollama, the application runs completely locally without requiring paid AI APIs.
 
-<img width="500" height="200" alt="image" src="https://github.com/user-attachments/assets/dd309316-19b7-424e-a380-420b5aa11e29" />
-
-<img width="500" height="200" alt="image" src="https://github.com/user-attachments/assets/3d006f5e-3e58-4a63-bd1f-dcf6a0b8e2b9" />
+<img width="500" height="200" alt="image" src="https://github.com/user-attachments/assets/dd309316-19b7-424e-a380-420b5aa11e29" /> <img width="500" height="200" alt="image" src="https://github.com/user-attachments/assets/3d006f5e-3e58-4a63-bd1f-dcf6a0b8e2b9" />
 
 
 ---
